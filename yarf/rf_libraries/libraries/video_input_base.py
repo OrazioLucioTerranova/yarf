@@ -531,7 +531,6 @@ class VideoInputBase(ABC):
             # Log what OCR reads when the content changes, to help diagnose
             # issues with text not being found or only found after a long time.
             read = await self.read_text(cropped_image)
-            log_image(cropped_image, msg)
             if read != last_ocr_read:
                 elapsed = time.monotonic() - start_time
                 indented = "\n".join(f"  {line}" for line in read.splitlines())
@@ -540,7 +539,7 @@ class VideoInputBase(ABC):
                     f" (waiting for '{text}')"
                 )
                 logger.debug(f"{msg}:\n{indented}")
-                
+                log_image(cropped_image, msg)
                 last_ocr_read = read
             await self._sleep_for_minimum_iteration_time(
                 iteration_start_time, start_time + timeout
